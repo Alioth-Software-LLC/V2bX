@@ -1,7 +1,6 @@
 package node
 
 import (
-	"errors"
 	"fmt"
 
 	"github.com/InazumaV/V2bX/api/panel"
@@ -52,8 +51,8 @@ func (c *Controller) Start() error {
 	if err != nil {
 		return fmt.Errorf("get user list error: %s", err)
 	}
-	if len(c.userList) == 0 {
-		return errors.New("add users error: not have any user")
+	if c.userList == nil {
+		return fmt.Errorf("get user list error: received no-change response before initial user snapshot")
 	}
 	c.aliveMap, err = c.apiClient.GetUserAlive()
 	if err != nil {
@@ -83,13 +82,16 @@ func (c *Controller) Start() error {
 	if err != nil {
 		return fmt.Errorf("add new node error: %s", err)
 	}
-	added, err := c.server.AddUsers(&vCore.AddUsersParams{
-		Tag:      c.tag,
-		Users:    c.userList,
-		NodeInfo: node,
-	})
-	if err != nil {
-		return fmt.Errorf("add users error: %s", err)
+	added := 0
+	if len(c.userList) > 0 {
+		added, err = c.server.AddUsers(&vCore.AddUsersParams{
+			Tag:      c.tag,
+			Users:    c.userList,
+			NodeInfo: node,
+		})
+		if err != nil {
+			return fmt.Errorf("add users error: %s", err)
+		}
 	}
 	log.WithField("tag", c.tag).Infof("Added %d new users", added)
 	c.info = node

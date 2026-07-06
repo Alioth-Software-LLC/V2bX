@@ -11,6 +11,9 @@ app/legocmd/.lego/
 .vscode/launch.json
 example/.lego
 example/cert
+node/cert/
+node/*.key
+node/*.pem
 ./vscode
 output/*
 .idea/*

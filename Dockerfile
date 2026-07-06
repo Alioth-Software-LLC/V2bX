@@ -8,6 +8,14 @@ RUN GOEXPERIMENT=jsonv2 go build -v -o V2bX -tags "sing xray hysteria2 with_quic
 
 # Release
 FROM  alpine
+ARG V2BX_IMAGE_VERSION="v0.4.1-alioth.1"
+ARG V2BX_IMAGE_REVISION="unknown"
+ARG V2BX_UPSTREAM_REVISION="71277de69efbbc86c23ad8ae02b68efd174e5756"
+LABEL org.opencontainers.image.source="https://github.com/Alioth-Software-LLC/V2bX" \
+      org.opencontainers.image.version="${V2BX_IMAGE_VERSION}" \
+      org.opencontainers.image.revision="${V2BX_IMAGE_REVISION}" \
+      com.alioth.v2bx.upstream-revision="${V2BX_UPSTREAM_REVISION}" \
+      com.alioth.v2bx.patch="empty-user-list-revokes-authorized-users"
 # 安装必要的工具包
 RUN  apk --update --no-cache add tzdata ca-certificates \
     && cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
